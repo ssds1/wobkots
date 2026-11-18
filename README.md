@@ -35,5 +35,6 @@ Special thanks to:
 - jordy
 - ChendoChap
 - sonic-iso
-- SISTRo
--ufm42
+- SISTR0
+- ufm42
+- 
