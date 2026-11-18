@@ -1,53 +1,218 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wobkot - Clean Modern</title>
+    <title>WOBKOT // CYBERDECK</title>
     <style>
+      :root {
+        --bg-void: #050508;
+        --panel-bg: #0c0d14;
+        --accent-pink: #ff0055;
+        --accent-cyan: #00f0ff;
+        --accent-yellow: #fcee0a;
+        --text-main: #e0e6ed;
+        --border-dim: rgba(0, 240, 255, 0.2);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
       html, body {
         height: 100%;
         margin: 0;
-        background-color: #0b0c10;
+        background-color: var(--bg-void);
+        background-image: 
+          linear-gradient(rgba(0, 240, 255, 0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 240, 255, 0.04) 1px, transparent 1px);
+        background-size: 28px 28px;
+        color: var(--text-main);
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         overflow: hidden;
       }
-      
+
+      .cyber-shell {
+        width: 92%;
+        max-width: 860px;
+        height: 82vh;
+        max-height: 580px;
+        background: var(--panel-bg);
+        border: 1px solid var(--border-dim);
+        border-left: 4px solid var(--accent-pink);
+        clip-path: polygon(
+          0 0, 
+          calc(100% - 24px) 0, 
+          100% 24px, 
+          100% 100%, 
+          24px 100%, 
+          0 calc(100% - 24px)
+        );
+        box-shadow: 0 0 40px rgba(255, 0, 85, 0.12), inset 0 0 25px rgba(0, 0, 0, 0.8);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+
+      .top-hud {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 24px;
+        background: linear-gradient(90deg, rgba(255, 0, 85, 0.14) 0%, rgba(12, 13, 20, 0.9) 100%);
+        border-bottom: 1px solid var(--border-dim);
+      }
+
+      .hud-title-group {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .hud-tag {
+        background: var(--accent-pink);
+        color: #fff;
+        font-size: 0.7rem;
+        font-weight: 900;
+        padding: 3px 8px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+      }
+
+      .hud-title {
+        font-size: 1.15rem;
+        font-weight: 800;
+        letter-spacing: 3px;
+        color: #fff;
+        text-transform: uppercase;
+      }
+
+      .hud-stats {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.75rem;
+        color: var(--accent-cyan);
+      }
+
+      .pulse-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .pulse-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--accent-yellow);
+        box-shadow: 0 0 8px var(--accent-yellow);
+        animation: blink 1.2s infinite alternate;
+      }
+
+      @keyframes blink {
+        0% { opacity: 0.3; }
+        100% { opacity: 1; }
+      }
+
+      .console-stage {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+        background: radial-gradient(circle at top right, rgba(0, 240, 255, 0.05), transparent 60%);
+      }
+
+      /* تأثير خطوط المسح الخفيفة */
+      .console-stage::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+          0deg,
+          rgba(0, 0, 0, 0.18),
+          rgba(0, 0, 0, 0.18) 1px,
+          transparent 1px,
+          transparent 3px
+        );
+        pointer-events: none;
+      }
+
       #console {
         width: 100%;
         height: 100%;
         margin: 0;
-        padding: 25px;
+        padding: 20px 24px;
         font-size: 13px;
-        overflow: auto;
-        box-sizing: border-box;
-        font-family: 'JetBrains Mono', 'Fira Code', 'Lucida Console', 'Courier New', monospace;
-        background-color: #0b0c10;
-        color: #66ffcc;
-        line-height: 1.6;
-        letter-spacing: 0.3px;
+        overflow-y: auto;
+        font-family: 'Consolas', 'Courier New', monospace;
+        background: transparent;
+        color: var(--accent-cyan);
+        line-height: 1.65;
         white-space: pre-wrap;
         word-wrap: break-word;
       }
 
-      /* تخصيص شكل شريط التمرير (Scrollbar) ليكون أنيقاً ومتناسقاً */
       #console::-webkit-scrollbar {
-        width: 8px;
+        width: 6px;
       }
       #console::-webkit-scrollbar-track {
-        background: #0b0c10;
+        background: rgba(0, 0, 0, 0.4);
       }
       #console::-webkit-scrollbar-thumb {
-        background: #1f2833;
-        border-radius: 4px;
+        background: var(--accent-pink);
       }
-      #console::-webkit-scrollbar-thumb:hover {
-        background: #45a29e;
+
+      .bottom-hud {
+        padding: 10px 24px;
+        background: #08090e;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-family: 'Courier New', monospace;
+        font-size: 0.72rem;
+        color: #6c7a89;
+      }
+
+      .bottom-hud span.highlight {
+        color: var(--accent-yellow);
       }
     </style>
     <script src="src/main.js" defer></script>
-    <title>Wobkot</title>
   </head>
   <body>
-    <pre id="console">Initializing Wobkot environment...</pre>
+
+    <div class="cyber-shell">
+      <div class="top-hud">
+        <div class="hud-title-group">
+          <span class="hud-tag">SYS.05</span>
+          <span class="hud-title">WOBKOT</span>
+        </div>
+        <div class="hud-stats">
+          <span id="ua-badge">AGENT: CHECKING</span>
+          <span class="pulse-indicator"><span class="pulse-dot"></span>LIVE</span>
+        </div>
+      </div>
+
+      <div class="console-stage">
+        <pre id="console">[SYS] Booting Wobkot Cyberdeck Interface...
+</pre>
+      </div>
+
+      <div class="bottom-hud">
+        <span>MEM_TARGET: <span class="highlight">PS5_WEBKIT</span></span>
+        <span>EXEC_MODE: <span class="highlight">DIRECT_STREAM</span></span>
+      </div>
+    </div>
+
+    <script>
+      try {
+        const isPS5 = /PlayStation 5/i.test(navigator.userAgent);
+        document.getElementById("ua-badge").textContent = isPS5 ? "AGENT: PS5_OK" : "AGENT: NON_PS5";
+      } catch (e) {}
+    </script>
   </body>
 </html>
