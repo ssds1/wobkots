@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <title>WOBKOT // CYBERDECK</title>
     <style>
       :root {
@@ -12,7 +13,7 @@
         --accent-cyan: #00f0ff;
         --accent-yellow: #fcee0a;
         --text-main: #e0e6ed;
-        --border-dim: rgba(0, 240, 255, 0.2);
+        --border-dim: rgba(0, 240, 255, 0.22);
       }
 
       * {
@@ -20,10 +21,11 @@
       }
 
       html, body {
+        min-height: 100%;
         height: 100%;
         margin: 0;
         background-color: var(--bg-void);
-        background-image: 
+        background-image:
           linear-gradient(rgba(0, 240, 255, 0.04) 1px, transparent 1px),
           linear-gradient(90deg, rgba(0, 240, 255, 0.04) 1px, transparent 1px);
         background-size: 28px 28px;
@@ -32,44 +34,41 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        padding: 12px;
         overflow: hidden;
       }
 
       .cyber-shell {
-        width: 92%;
+        width: 100%;
         max-width: 860px;
-        height: 82vh;
-        max-height: 580px;
+        height: 86vh;
+        max-height: 600px;
         background: var(--panel-bg);
         border: 1px solid var(--border-dim);
         border-left: 4px solid var(--accent-pink);
-        clip-path: polygon(
-          0 0, 
-          calc(100% - 24px) 0, 
-          100% 24px, 
-          100% 100%, 
-          24px 100%, 
-          0 calc(100% - 24px)
-        );
-        box-shadow: 0 0 40px rgba(255, 0, 85, 0.12), inset 0 0 25px rgba(0, 0, 0, 0.8);
+        border-radius: 6px;
+        box-shadow: 0 0 35px rgba(255, 0, 85, 0.14), inset 0 0 25px rgba(0, 0, 0, 0.8);
         display: flex;
         flex-direction: column;
         position: relative;
+        overflow: hidden;
       }
 
       .top-hud {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 14px 24px;
-        background: linear-gradient(90deg, rgba(255, 0, 85, 0.14) 0%, rgba(12, 13, 20, 0.9) 100%);
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 12px 20px;
+        background: linear-gradient(90deg, rgba(255, 0, 85, 0.14) 0%, rgba(12, 13, 20, 0.92) 100%);
         border-bottom: 1px solid var(--border-dim);
       }
 
       .hud-title-group {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 10px;
       }
 
       .hud-tag {
@@ -80,10 +79,11 @@
         padding: 3px 8px;
         letter-spacing: 1.5px;
         text-transform: uppercase;
+        border-radius: 2px;
       }
 
       .hud-title {
-        font-size: 1.15rem;
+        font-size: 1.1rem;
         font-weight: 800;
         letter-spacing: 3px;
         color: #fff;
@@ -93,7 +93,7 @@
       .hud-stats {
         display: flex;
         align-items: center;
-        gap: 16px;
+        gap: 14px;
         font-family: 'Courier New', monospace;
         font-size: 0.75rem;
         color: var(--accent-cyan);
@@ -108,6 +108,7 @@
       .pulse-dot {
         width: 8px;
         height: 8px;
+        border-radius: 50%;
         background: var(--accent-yellow);
         box-shadow: 0 0 8px var(--accent-yellow);
         animation: blink 1.2s infinite alternate;
@@ -125,15 +126,14 @@
         background: radial-gradient(circle at top right, rgba(0, 240, 255, 0.05), transparent 60%);
       }
 
-      /* تأثير خطوط المسح الخفيفة */
       .console-stage::after {
         content: "";
         position: absolute;
         inset: 0;
         background: repeating-linear-gradient(
           0deg,
-          rgba(0, 0, 0, 0.18),
-          rgba(0, 0, 0, 0.18) 1px,
+          rgba(0, 0, 0, 0.16),
+          rgba(0, 0, 0, 0.16) 1px,
           transparent 1px,
           transparent 3px
         );
@@ -144,15 +144,15 @@
         width: 100%;
         height: 100%;
         margin: 0;
-        padding: 20px 24px;
+        padding: 16px 20px;
         font-size: 13px;
         overflow-y: auto;
         font-family: 'Consolas', 'Courier New', monospace;
         background: transparent;
         color: var(--accent-cyan);
-        line-height: 1.65;
+        line-height: 1.6;
         white-space: pre-wrap;
-        word-wrap: break-word;
+        word-break: break-word;
       }
 
       #console::-webkit-scrollbar {
@@ -165,13 +165,54 @@
         background: var(--accent-pink);
       }
 
+      .hud-actions {
+        display: flex;
+        gap: 8px;
+        padding: 8px 20px;
+        background: #0a0b12;
+        border-top: 1px solid rgba(0, 240, 255, 0.12);
+      }
+
+      .hud-btn {
+        background: rgba(0, 240, 255, 0.08);
+        color: var(--accent-cyan);
+        border: 1px solid rgba(0, 240, 255, 0.35);
+        border-radius: 3px;
+        padding: 5px 12px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        cursor: pointer;
+        text-transform: uppercase;
+      }
+
+      .hud-btn:hover, .hud-btn:focus {
+        outline: 0;
+        background: var(--accent-cyan);
+        color: #050508;
+      }
+
+      .hud-btn.warn {
+        border-color: rgba(255, 0, 85, 0.45);
+        color: #ff7aa8;
+        background: rgba(255, 0, 85, 0.08);
+      }
+
+      .hud-btn.warn:hover, .hud-btn.warn:focus {
+        background: var(--accent-pink);
+        color: #fff;
+      }
+
       .bottom-hud {
-        padding: 10px 24px;
+        padding: 9px 20px;
         background: #08090e;
         border-top: 1px solid rgba(255, 255, 255, 0.06);
         display: flex;
         justify-content: space-between;
         align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
         font-family: 'Courier New', monospace;
         font-size: 0.72rem;
         color: #6c7a89;
@@ -181,7 +222,6 @@
         color: var(--accent-yellow);
       }
     </style>
-    <script src="src/main.js" defer></script>
   </head>
   <body>
 
@@ -202,6 +242,11 @@
 </pre>
       </div>
 
+      <div class="hud-actions">
+        <button type="button" class="hud-btn" id="btn-reload">Reload</button>
+        <button type="button" class="hud-btn warn" id="btn-clear">Clear Log</button>
+      </div>
+
       <div class="bottom-hud">
         <span>MEM_TARGET: <span class="highlight">PS5_WEBKIT</span></span>
         <span>EXEC_MODE: <span class="highlight">DIRECT_STREAM</span></span>
@@ -209,10 +254,39 @@
     </div>
 
     <script>
-      try {
-        const isPS5 = /PlayStation 5/i.test(navigator.userAgent);
-        document.getElementById("ua-badge").textContent = isPS5 ? "AGENT: PS5_OK" : "AGENT: NON_PS5";
-      } catch (e) {}
+      (function () {
+        const logEl = document.getElementById("console");
+        function appendLog(msg) {
+          if (!logEl) return;
+          logEl.textContent += msg + "\n";
+          logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        try {
+          const ua = navigator.userAgent || "";
+          const isPS5 = /PlayStation 5/i.test(ua);
+          const badge = document.getElementById("ua-badge");
+          if (badge) badge.textContent = isPS5 ? "AGENT: PS5_OK" : "AGENT: NON_PS5";
+          appendLog("[SYS] UA: " + ua);
+        } catch (e) {
+          appendLog("[ERR] UA check failed: " + e.message);
+        }
+
+        window.addEventListener("error", function (e) {
+          appendLog("[ERR] " + (e.message || "Script error") + (e.filename ? " @ " + e.filename + ":" + e.lineno : ""));
+        });
+
+        window.addEventListener("unhandledrejection", function (e) {
+          const reason = e.reason && (e.reason.message || e.reason);
+          appendLog("[PROMISE_ERR] " + String(reason));
+        });
+
+        const btnReload = document.getElementById("btn-reload");
+        const btnClear = document.getElementById("btn-clear");
+        if (btnReload) btnReload.addEventListener("click", function () { location.reload(); });
+        if (btnClear) btnClear.addEventListener("click", function () { if (logEl) logEl.textContent = ""; });
+      })();
     </script>
+    <script src="src/main.js?v=2"></script>
   </body>
 </html>
