@@ -1,203 +1,218 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WOBKOT // CYBERDECK</title>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WOBKOT // CYBERDECK</title>
+    <style>
+      :root {
+        --bg-void: #050508;
+        --panel-bg: #0c0d14;
+        --accent-pink: #ff0055;
+        --accent-cyan: #00f0ff;
+        --accent-yellow: #fcee0a;
+        --text-main: #e0e6ed;
+        --border-dim: rgba(0, 240, 255, 0.2);
+      }
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+      * {
+        box-sizing: border-box;
+      }
 
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      min-height: 100%;
-      background-color: #091326;
-      background-image:
-        linear-gradient(rgba(65, 130, 245, 0.14) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(65, 130, 245, 0.14) 1px, transparent 1px);
-      background-size: 26px 26px;
-      color: #ffffff;
-      font-family: 'Courier New', Courier, monospace;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding-top: 52px;
-      padding-bottom: 24px;
-    }
+      html, body {
+        height: 100%;
+        margin: 0;
+        background-color: var(--bg-void);
+        background-image: 
+          linear-gradient(rgba(0, 240, 255, 0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 240, 255, 0.04) 1px, transparent 1px);
+        background-size: 28px 28px;
+        color: var(--text-main);
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
 
-    .topbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 42px;
-      background: #1464b8;
-      display: flex;
-      align-items: center;
-      padding: 0 14px;
-      font-weight: bold;
-      font-size: 0.95rem;
-      letter-spacing: 1px;
-      z-index: 10;
-    }
+      .cyber-shell {
+        width: 92%;
+        max-width: 860px;
+        height: 82vh;
+        max-height: 580px;
+        background: var(--panel-bg);
+        border: 1px solid var(--border-dim);
+        border-left: 4px solid var(--accent-pink);
+        clip-path: polygon(
+          0 0, 
+          calc(100% - 24px) 0, 
+          100% 24px, 
+          100% 100%, 
+          24px 100%, 
+          0 calc(100% - 24px)
+        );
+        box-shadow: 0 0 40px rgba(255, 0, 85, 0.12), inset 0 0 25px rgba(0, 0, 0, 0.8);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
 
-    .deck-window {
-      width: 92%;
-      max-width: 720px;
-      background: rgba(14, 17, 42, 0.95);
-      border: 2px solid #ff58e4;
-      box-shadow: 0 0 22px rgba(255, 88, 228, 0.35), 0 12px 28px rgba(0, 0, 0, 0.7);
-      padding: 16px;
-    }
+      .top-hud {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 24px;
+        background: linear-gradient(90deg, rgba(255, 0, 85, 0.14) 0%, rgba(12, 13, 20, 0.9) 100%);
+        border-bottom: 1px solid var(--border-dim);
+      }
 
-    .deck-header {
-      background: linear-gradient(90deg, #581c87, #c026d3, #e879f9);
-      padding: 8px 12px;
-      font-weight: bold;
-      font-size: 0.95rem;
-      letter-spacing: 1.5px;
-      margin-bottom: 12px;
-    }
+      .hud-title-group {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
 
-    #console, #log {
-      width: 100%;
-      height: 330px;
-      min-height: 240px;
-      background: #080c20;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      padding: 12px;
-      color: #ffffff;
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 0.9rem;
-      line-height: 1.42;
-      overflow-y: auto;
-      overflow-x: auto;
-      white-space: pre-wrap;
-      word-break: break-word;
-      display: block;
-      visibility: visible;
-      opacity: 1;
-    }
+      .hud-tag {
+        background: var(--accent-pink);
+        color: #fff;
+        font-size: 0.7rem;
+        font-weight: 900;
+        padding: 3px 8px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+      }
 
-    .controls {
-      display: flex;
-      gap: 10px;
-      margin-top: 14px;
-      flex-wrap: wrap;
-    }
+      .hud-title {
+        font-size: 1.15rem;
+        font-weight: 800;
+        letter-spacing: 3px;
+        color: #fff;
+        text-transform: uppercase;
+      }
 
-    button {
-      background: #93179c;
-      color: #ffffff;
-      border: 1px solid #f0abfc;
-      padding: 8px 16px;
-      font-family: inherit;
-      font-size: 0.85rem;
-      font-weight: bold;
-      letter-spacing: 0.5px;
-      cursor: pointer;
-    }
+      .hud-stats {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.75rem;
+        color: var(--accent-cyan);
+      }
 
-    button:hover {
-      background: #b51ec0;
-    }
+      .pulse-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
 
-    .status-bar {
-      margin-top: 12px;
-      font-size: 0.82rem;
-      letter-spacing: 1.5px;
-      color: #cbd5e1;
-      text-transform: uppercase;
-    }
-  </style>
-</head>
-<body>
-  <div class="topbar">WOBKOT // CYBERDECK</div>
+      .pulse-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--accent-yellow);
+        box-shadow: 0 0 8px var(--accent-yellow);
+        animation: blink 1.2s infinite alternate;
+      }
 
-  <div class="deck-window">
-    <div class="deck-header">WOBKOT</div>
-    <div id="console"></div>
+      @keyframes blink {
+        0% { opacity: 0.3; }
+        100% { opacity: 1; }
+      }
 
-    <div class="controls">
-      <button type="button" id="reloadBtn" onclick="location.reload()">RELOAD</button>
-      <button type="button" id="clearBtn">CLEAR LOG</button>
+      .console-stage {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+        background: radial-gradient(circle at top right, rgba(0, 240, 255, 0.05), transparent 60%);
+      }
+
+      /* تأثير خطوط المسح الخفيفة */
+      .console-stage::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+          0deg,
+          rgba(0, 0, 0, 0.18),
+          rgba(0, 0, 0, 0.18) 1px,
+          transparent 1px,
+          transparent 3px
+        );
+        pointer-events: none;
+      }
+
+      #console {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 20px 24px;
+        font-size: 13px;
+        overflow-y: auto;
+        font-family: 'Consolas', 'Courier New', monospace;
+        background: transparent;
+        color: var(--accent-cyan);
+        line-height: 1.65;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+      }
+
+      #console::-webkit-scrollbar {
+        width: 6px;
+      }
+      #console::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.4);
+      }
+      #console::-webkit-scrollbar-thumb {
+        background: var(--accent-pink);
+      }
+
+      .bottom-hud {
+        padding: 10px 24px;
+        background: #08090e;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-family: 'Courier New', monospace;
+        font-size: 0.72rem;
+        color: #6c7a89;
+      }
+
+      .bottom-hud span.highlight {
+        color: var(--accent-yellow);
+      }
+    </style>
+    <script src="src/main.js" defer></script>
+  </head>
+  <body>
+
+    <div class="cyber-shell">
+      <div class="top-hud">
+        <div class="hud-title-group">
+          <span class="hud-tag">SYS.05</span>
+          <span class="hud-title">WOBKOT</span>
+        </div>
+        <div class="hud-stats">
+          <span id="ua-badge">AGENT: CHECKING</span>
+          <span class="pulse-indicator"><span class="pulse-dot"></span>LIVE</span>
+        </div>
+      </div>
+
+      <div class="console-stage">
+        <pre id="console">[SYS] Booting Wobkot Cyberdeck Interface...
+</pre>
+      </div>
+
+      <div class="bottom-hud">
+        <span>MEM_TARGET: <span class="highlight">PS5_WEBKIT</span></span>
+        <span>EXEC_MODE: <span class="highlight">DIRECT_STREAM</span></span>
+      </div>
     </div>
 
-    <div class="status-bar" id="statusBar">NEW_TARGET: PS5_WEBKIT</div>
-  </div>
-
-  <script>
-    (function () {
-      const consoleEl = document.getElementById('console');
-      const statusEl = document.getElementById('statusBar');
-      const clearBtn = document.getElementById('clearBtn');
-
-      function appendLine(text) {
-        if (!consoleEl) return;
-        const msg = typeof text === 'string' ? text : String(text);
-        consoleEl.textContent += (consoleEl.textContent ? '\n' : '') + msg;
-        consoleEl.scrollTop = consoleEl.scrollHeight;
-      }
-
-      function setStatus(text) {
-        if (statusEl) statusEl.textContent = text;
-      }
-
-      window.appendLog = appendLine;
-      window.log = appendLine;
-      window.setStatus = setStatus;
-
-      const origLog = console.log.bind(console);
-      const origWarn = console.warn.bind(console);
-      const origError = console.error.bind(console);
-
-      console.log = function (...args) {
-        origLog(...args);
-        appendLine('[*] ' + args.join(' '));
-      };
-
-      console.warn = function (...args) {
-        origWarn(...args);
-        appendLine('[!] ' + args.join(' '));
-      };
-
-      console.error = function (...args) {
-        origError(...args);
-        appendLine('[-] ' + args.join(' '));
-      };
-
-      window.addEventListener('error', function (event) {
-        const loc = event.filename ? ` @ ${event.filename}:${event.lineno}:${event.colno}` : '';
-        setStatus('PROMISE_ERR');
-        appendLine(`[-] ${event.message || 'Error'}${loc}`);
-      });
-
-      window.addEventListener('unhandledrejection', function (event) {
-        const reason = event.reason && event.reason.message ? event.reason.message : event.reason;
-        setStatus('PROMISE_ERR');
-        appendLine(`[-] [PROMISE_ERR] ${reason}`);
-      });
-
-      if (clearBtn && consoleEl) {
-        clearBtn.addEventListener('click', function () {
-          consoleEl.textContent = '';
-          setStatus('NEW_TARGET: PS5_WEBKIT');
-        });
-      }
-    })();
-  </script>
-
-  <script src="./src/firmware.js" onerror="window.appendLog && window.appendLog('[-] Failed to load ./src/firmware.js')"></script>
-  <script src="./src/utils/syscalls.js" onerror="window.appendLog && window.appendLog('[-] Failed to load ./src/utils/syscalls.js')"></script>
-  <script src="./src/rop.js" onerror="window.appendLog && window.appendLog('[-] Failed to load ./src/rop.js')"></script>
-  <script src="./src/main.js" onerror="window.appendLog && window.appendLog('[-] Failed to load ./src/main.js')"></script>
-  <script type="module" src="./src/site.js"></script>
-</body>
+    <script>
+      try {
+        const isPS5 = /PlayStation 5/i.test(navigator.userAgent);
+        document.getElementById("ua-badge").textContent = isPS5 ? "AGENT: PS5_OK" : "AGENT: NON_PS5";
+      } catch (e) {}
+    </script>
+  </body>
 </html>
-
