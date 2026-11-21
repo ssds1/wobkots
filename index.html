@@ -31,4 +31,173 @@
       padding-bottom: 24px;
     }
 
-    .topbar
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 42px;
+      background: #1464b8;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      letter-spacing: 1px;
+      z-index: 10;
+    }
+
+    .deck-window {
+      width: 92%;
+      max-width: 720px;
+      background: rgba(14, 17, 42, 0.95);
+      border: 2px solid #ff58e4;
+      box-shadow: 0 0 22px rgba(255, 88, 228, 0.35), 0 12px 28px rgba(0, 0, 0, 0.7);
+      padding: 16px;
+    }
+
+    .deck-header {
+      background: linear-gradient(90deg, #581c87, #c026d3, #e879f9);
+      padding: 8px 12px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      letter-spacing: 1.5px;
+      margin-bottom: 12px;
+    }
+
+    #console, #log {
+      width: 100%;
+      height: 330px;
+      min-height: 240px;
+      background: #080c20;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      padding: 12px;
+      color: #ffffff;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9rem;
+      line-height: 1.42;
+      overflow-y: auto;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      display: block;
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      background: #93179c;
+      color: #ffffff;
+      border: 1px solid #f0abfc;
+      padding: 8px 16px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #b51ec0;
+    }
+
+    .status-bar {
+      margin-top: 12px;
+      font-size: 0.82rem;
+      letter-spacing: 1.5px;
+      color: #cbd5e1;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">WOBKOT // CYBERDECK</div>
+
+  <div class="deck-window">
+    <div class="deck-header">WOBKOT</div>
+    <div id="console"></div>
+
+    <div class="controls">
+      <button type="button" id="reloadBtn" onclick="location.reload()">RELOAD</button>
+      <button type="button" id="clearBtn">CLEAR LOG</button>
+    </div>
+
+    <div class="status-bar" id="statusBar">NEW_TARGET: PS5_WEBKIT</div>
+  </div>
+
+  <script>
+    (function () {
+      const consoleEl = document.getElementById('console');
+      const statusEl = document.getElementById('statusBar');
+      const clearBtn = document.getElementById('clearBtn');
+
+      function appendLine(text) {
+        if (!consoleEl) return;
+        const msg = typeof text === 'string' ? text : String(text);
+        consoleEl.textContent += (consoleEl.textContent ? '\n' : '') + msg;
+        consoleEl.scrollTop = consoleEl.scrollHeight;
+      }
+
+      function setStatus(text) {
+        if (statusEl) statusEl.textContent = text;
+      }
+
+      window.appendLog = appendLine;
+      window.log = appendLine;
+      window.setStatus = setStatus;
+
+      const origLog = console.log.bind(console);
+      const origWarn = console.warn.bind(console);
+      const origError = console.error.bind(console);
+
+      console.log = function (...args) {
+        origLog(...args);
+        appendLine('[*] ' + args.join(' '));
+      };
+
+      console.warn = function (...args) {
+        origWarn(...args);
+        appendLine('[!] ' + args.join(' '));
+      };
+
+      console.error = function (...args) {
+        origError(...args);
+        appendLine('[-] ' + args.join(' '));
+      };
+
+      window.addEventListener('error', function (event) {
+        const loc = event.filename ? ` @ ${event.filename}:${event.lineno}:${event.colno}` : '';
+        setStatus('PROMISE_ERR');
+        appendLine(`[-] ${event.message || 'Error'}${loc}`);
+      });
+
+      window.addEventListener('unhandledrejection', function (event) {
+        const reason = event.reason && event.reason.message ? event.reason.message : event.reason;
+        setStatus('PROMISE_ERR');
+        appendLine(`[-] [PROMISE_ERR] ${reason}`);
+      });
+
+      if (clearBtn && consoleEl) {
+        clearBtn.addEventListener('click', function () {
+          consoleEl.textContent = '';
+          setStatus('NEW_TARGET: PS5_WEBKIT');
+        });
+      }
+    })();
+  </script>
+
+  <script src="./src/firmware.js" onerror="window.appendLog && window.appendLog('[-] Failed to load ./src/firmware.js')"></script>
+  <script src="./src/utils/syscalls.js" onerror="window.appendLog && window.appendLog('[-] Failed to load ./src/utils/syscalls.js')"></script>
+  <script src="./src/rop.js" onerror="window.appendLog && window.appendLog('[-] Failed to load ./src/rop.js')"></script>
+  <script src="./src/main.js" onerror="window.appendLog && window.appendLog('[-] Failed to load ./src/main.js')"></script>
+  <script type="module" src="./src/site.js"></script>
+</body>
+</html>
+
