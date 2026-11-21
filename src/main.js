@@ -35,4 +35,62 @@ window.onerror = function (message, source, line, column, error) {
 };
 
 window.onunhandledrejection = function (event) {
-  const err = event
+  const err = event.reason;
+
+  let msg = err && err.message ? err.message : String(err);
+
+  if (err && err.stack) {
+    msg += `\n${err.stack}`;
+  }
+
+  logger.error(msg);
+};
+
+function load_script(src) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = src;
+    script.onload = resolve;
+    script.onerror = () => {
+      reject(new Error(`Failed to load script: ${src}`));
+    };
+    document.head.appendChild(script);
+  });
+}
+
+async function load_file(src) {
+  const res = await fetch(src);
+
+  if (!res.ok) {
+    throw new Error(`HTTP ${res.status}: ${src}`);
+  }
+
+  const buf = await res.arrayBuffer();
+  return new Uint8Array(buf);
+}
+
+async function main() {
+  await load_script('src/misc.js');
+
+  version.init();
+
+  switch (version.console) {
+    case 4:
+      await load_script('src/ps4/impl.js');
+      break;
+    case 5:
+      await load_script('src/ps5/impl.js');
+      break;
+    default:
+      throw new Error(`Unsupported console ${version.console}`);
+  }
+
+  await load_script('src/userland.js');
+  await userland_main();
+
+  await load_script('src/kernel.js');
+  await kernel_main();
+}
+
+logger.init();
+main();
