@@ -1,6 +1,3 @@
-const PAYLOAD_URI = 'src/ps5/pldmg.elf'; // مسار الملف داخل مجلد src/ps5
-const AUTOLOAD_DELAY_MS = 1000; // مهلة قصيرة للتأكد من جاهزية المنفذ 9021
-
 const logger = {
   verbose: true, // enable for debug logs
 
@@ -72,33 +69,6 @@ async function load_file(src) {
   return new Uint8Array(buf);
 }
 
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-function resolve_payload_uri(uri) {
-  if (!uri) return '';
-  if (/^(https?|file):\/\//i.test(uri)) {
-    return uri;
-  }
-  const cleanPath = uri.replace(/^\.?\//, '');
-  return new URL(cleanPath, window.location.href).href;
-}
-
-async function autoload_payload(uri) {
-  const targetUri = resolve_payload_uri(uri);
-  if (!targetUri) return;
-
-  if (AUTOLOAD_DELAY_MS > 0) {
-    await sleep(AUTOLOAD_DELAY_MS);
-  }
-
-  const url = `http://127.0.0.1:9021/x?uri=${encodeURIComponent(targetUri)}`;
-  logger.info(`Autoloading payload via 9021: ${targetUri}`);
-  await fetch(url, { mode: 'no-cors' });
-  logger.info('Autoload request sent');
-}
-
 async function main() {
   await load_script('src/misc.js');
 
@@ -121,7 +91,7 @@ async function main() {
   await load_script('src/kernel.js');
   await kernel_main();
 
-  await autoload_payload(PAYLOAD_URI);
+  fetch('http://127.0.0.1:9021/x?uri=' + encodeURIComponent('file:///path/to/payload.elf'),{mode: 'no-cors'});
 }
 
 logger.init();
