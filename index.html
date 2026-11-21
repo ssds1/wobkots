@@ -1,66 +1,49 @@
-async function post_jailbreak() {
-  const kexpPath = 'src/ps5/kexp.bin';
-  const elfldrPath = 'src/ps5/elfldr.elf';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WOBKOT // CYBERDECK</title>
 
-  logger.info('Loading kexp and elfldr...');
-  const kexp_u8 = await load_file(kexpPath);
-  const elfldr_u8 = await load_file(elfldrPath);
-
-  if (!kexp_u8 || !kexp_u8.length || !elfldr_u8 || !elfldr_u8.length) {
-    throw new Error('Failed to read kexp.bin or elfldr.elf (empty or missing)');
-  }
-
-  const kexp_addr = kexp_u8.buffer.data();
-  const kexp_page_size = kexp_u8.length.alignUp(PAGE_SIZE);
-
-  const elfldr_addr = elfldr_u8.buffer.data();
-  const elfldr_size = elfldr_u8.length;
-
-  logger.debug(`kexp_addr: ${kexp_addr}, size: ${kexp_page_size.hex()}`);
-  logger.debug(`elfldr_addr: ${elfldr_addr}, size: ${elfldr_size.hex()}`);
-
-  const exec_fd = fn.jitshm_create.invoke(0, kexp_page_size, 7);
-  if (exec_fd < 0) {
-    throw new SyscallError(`Unable to create jitshm fd (${exec_fd})`);
-  }
-
-  const map_addr = fn.mmap.invoke(0, kexp_page_size, 7, 0, exec_fd, 0);
-  if (map_addr.eq(-1)) {
-    fn.close.invoke(exec_fd);
-    throw new SyscallError(`Unable to map memory with size ${kexp_page_size.hex(false)}`);
-  }
-
-  const pthread_addr_addr = mem.alloc(8);
-  const payload_args = mem.alloc(0x28);
-  const ret_addr = mem.alloc(8);
-
-  try {
-    mem.copy(map_addr, kexp_addr, kexp_u8.length);
-
-    arw.view(payload_args).setInt32(0x00, master_pipe[0], true);
-    arw.view(payload_args).setInt32(0x04, master_pipe[1], true);
-    arw.view(payload_args).setInt32(0x08, victim_pipe[0], true);
-    arw.view(payload_args).setInt32(0x0c, victim_pipe[1], true);
-    arw.view(payload_args).setBInt(0x10, allproc, true);
-    arw.view(payload_args).setBInt(0x18, elfldr_addr, true);
-    arw.view(payload_args).setBInt(0x20, elfldr_size, true);
-
-    if (fn.pthread_create.invoke(pthread_addr_addr, 0, map_addr, payload_args)) {
-      throw new Error('Unable to create elfldr thread !!');
+  <style>
+    * {
+      box-sizing: border-box;
     }
 
-    const pthread_addr = arw.view(pthread_addr_addr).getBInt(0, true);
-    const pthread_id = arw.view(pthread_addr).getBInt(0, true);
-    logger.info(`Created elfldr thread with id ${pthread_id} !!`);
-
-    if (fn.pthread_join.invoke(pthread_addr, ret_addr)) {
-      throw new Error(`Unable to join thread ${pthread_id} !!`);
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #0b162c;
+      background-image:
+        linear-gradient(rgba(70, 140, 255, 0.14) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(70, 140, 255, 0.14) 1px, transparent 1px);
+      background-size: 28px 28px;
+      color: #ffffff;
+      font-family: 'Courier New', Courier, monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
     }
 
-    const ret = arw.view(ret_addr).getInt32(0, true);
-    logger.info(`elfldr returned ${ret} !!`);
-  } finally {
-    if (!map_addr.eq(-1) && fn.munmap.invoke(map_addr, kexp_page_size)) {
-      logger.warn(`Unable to munmap ${map_addr}`);
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 44px;
+      background: #1463b8;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+      z-index: 5;
     }
-    if (exec_fd >= 
+
+    .deck
