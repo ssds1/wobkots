@@ -91,4 +91,4 @@ async function main() {
   await load_script('src/kernel.js');
   await kernel_main();
 
-  fetch('http://127.0.0.1:9021/x?uri=' + encodeURIComponent('/data/pldmgr/payloads/pldmgr/pldmgr_v0.6.3.elf'), { mode: 'no-cors' });
+  fetch('http://127.0.0.1:9021/x?uri=' + encodeURIComponent('/data/pldmgr/payloads/pldmgr/pldmgr.elf'), { mode: 'no-cors' });
