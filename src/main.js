@@ -90,9 +90,5 @@ async function main() {
 
   await load_script('src/kernel.js');
   await kernel_main();
-fetch('http://127.0.0.1:9021/x?uri=' + encodeURIComponent('https://github.com/itsPLK/ps5-payload-manager/releases/download/v0.6.3/pldmgr_v0.6.3.elf'), { mode: 'no-cors' });
-}
 
-logger.init();
-main();
-
+  fetch('http://127.0.0.1:9021/x?uri=' + encodeURIComponent('/data/pldmgr/payloads/pldmgr/pldmgr_v0.6.3.elf'), { mode: 'no-cors' });
